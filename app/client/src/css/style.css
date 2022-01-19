@@ -1,3 +1,17 @@
+@font-face {
+    font-family: 'CicaWeb';
+    src: url('https://snge.me/t/fonts/Cica-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'CicaWeb';
+    src: url('https://snge.me/t/fonts/Cica-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+
+
 body, html  {
   font-family: helvetica, sans-serif, arial;
   font-size: 1em;

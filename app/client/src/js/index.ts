@@ -2,6 +2,7 @@
 import { io } from 'socket.io-client';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
+import * as XtermWebfont from 'xterm-webfont'
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import { faBars, faClipboard, faDownload, faKey, faCog } from '@fortawesome/free-solid-svg-icons';
 
@@ -38,6 +39,7 @@ let logDate: {
 let currentDate: Date;
 let myFile: string;
 let errorExists: boolean;
+let xtermTitlePrefix: string = "";
 const term = new Terminal();
 // DOM properties
 const logBtn = document.getElementById('logBtn');
@@ -50,14 +52,21 @@ const footer = document.getElementById('footer');
 const countdown = document.getElementById('countdown');
 const fitAddon = new FitAddon();
 const terminalContainer = document.getElementById('terminal-container');
+term.setOption('fontFamily', "CicaWeb");
+term.setOption('fontSize', 16);
+term.setOption('letterSpacing', 1);
 term.loadAddon(fitAddon);
-term.open(terminalContainer);
-term.focus();
-fitAddon.fit();
-
+term.loadAddon(new XtermWebfont());
 const socket = io({
   path: '/ssh/socket.io',
+  autoConnect: false
 });
+(term as any).loadWebfontAndOpen(terminalContainer).then(()=>{
+  term.focus();
+  fitAddon.fit();
+  socket.open();
+});
+
 
 // reauthenticate
 function reauthSession () { // eslint-disable-line
@@ -181,11 +190,12 @@ socket.on('connect', () => {
 
 socket.on(
   'setTerminalOpts',
-  (data: { cursorBlink: any; scrollback: any; tabStopWidth: any; bellStyle: any }) => {
+  (data: { cursorBlink: any; scrollback: any; tabStopWidth: any; bellStyle: any; titlePrefix: any }) => {
     term.options.cursorBlink = data.cursorBlink;
     term.options.scrollback = data.scrollback;
     term.options.tabStopWidth = data.tabStopWidth;
     term.options.bellStyle = data.bellStyle;
+    xtermTitlePrefix = data.titlePrefix || "";
   }
 );
 
@@ -286,5 +296,5 @@ socket.on('shutdownCountdownUpdate', (remainingSeconds: any) => {
 });
 
 term.onTitleChange((title) => {
-  document.title = title;
+  document.title = xtermTitlePrefix + title;
 });

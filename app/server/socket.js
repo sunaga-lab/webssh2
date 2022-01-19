@@ -11,6 +11,7 @@ const SSH = require('ssh2').Client;
 const CIDRMatcher = require('cidr-matcher');
 const validator = require('validator');
 const dnsPromises = require('dns').promises;
+const config = require('./config');
 
 // var fs = require('fs')
 // var hostkeys = JSON.parse(fs.readFileSync('./hostkeyhashes.json', 'utf8'))
@@ -123,7 +124,7 @@ module.exports = function appSocket(socket) {
       socket.emit('menu');
       socket.emit('allowreauth', socket.request.session.ssh.allowreauth);
       socket.emit('setTerminalOpts', socket.request.session.ssh.terminal);
-      socket.emit('title', `ssh://${socket.request.session.ssh.host}`);
+      socket.emit('title', (config.terminal.initialTitle || 'ssh://[HOST]').replace('[HOST]', socket.request.session.ssh.host));
       if (socket.request.session.ssh.header.background)
         socket.emit('headerBackground', socket.request.session.ssh.header.background);
       if (socket.request.session.ssh.header.name)

@@ -35,6 +35,8 @@ let config = {
     scrollback: 10000,
     tabStopWidth: 8,
     bellStyle: 'sound',
+    titlePrefix: null,
+    initialTitle: 'ssh://[HOST]',
   },
   header: {
     text: null,

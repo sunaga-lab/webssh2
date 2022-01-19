@@ -126,6 +126,7 @@ app.get('/ssh/host/:host?', (req, res) => {
         req.query.bellStyle && ['sound', 'none'].indexOf(req.query.bellStyle) > -1
           ? req.query.bellStyle
           : config.terminal.bellStyle,
+      titlePrefix: req.query.titlePrefix || config.terminal.titlePrefix,
     },
     allowreplay:
       config.options.challengeButton ||
